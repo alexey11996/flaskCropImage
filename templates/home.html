@@ -25,7 +25,7 @@
 
 </div>
 {% endif %}
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     $(document).ready(function () {
         $('img#photo').imgAreaSelect({
             handles: true,
@@ -40,5 +40,35 @@
     });
 
 
+</script> -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('img#photo').selectAreas({
+            allowEdit: true,
+            allowMove: true,
+            allowResize: true,
+            allowSelect: true,
+            allowDelete: true,
+            allowNudge: true,
+            minSize: [10, 10],
+            onChanged: showAreas
+        })
+    });
+
+    function showAreas() {
+        var areas = $('img#photo').selectAreas('areas');
+        console.log(displayAreas(areas))
+    }
+    function areaToString(area) {
+        return area.x + ':' + area.y + ' ' + area.width + 'x' + area.height + '---'
+    }
+
+    function displayAreas(areas) {
+        var text = "";
+        $.each(areas, function (id, area) {
+            text += areaToString(area);
+        });
+        return text;
+    };
 </script>
 {% endblock %}
