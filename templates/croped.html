@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% if paths %}
+<div class="row">
+    {% for path in paths %}
+
+    <div class="col-md-3">
+        <div class="img-responsive">
+            <img src="{{path}}">
+            </a>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+<br>
+<form action="{{ url_for('delete') }}" method="GET">
+    <input type="submit" value="Удалить" class="btn btn-danger">
+</form>
+
+{% endif %}
+
+{% endblock %}

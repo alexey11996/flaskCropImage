@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% if filename == undefined %}
+<div class="form-group">
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('index') }}">
+        <input type="file" class="form-control-file" name="photo">
+        <br>
+        <input type="submit" class="btn btn-primary">
+    </form>
+</div>
+
+{% else %}
+<div>
+    <img class="img-responsive" id="photo" src="{{filename}}">
+    <br>
+    <form method="POST" action="{{ url_for('crop') }}">
+        <input type="hidden" value="{{ filename }}" name="filename" id="filename">
+        <input type="hidden" value="0" name="x1" id="x1">
+        <input type="hidden" value="0" name="y1" id="y1">
+        <input type="hidden" value="0" name="w" id="w">
+        <input type="hidden" value="0" name="h" id="h">
+        <input type="submit" value="Обрезать" class="btn btn-primary">
+    </form>
+
+</div>
+{% endif %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('img#photo').imgAreaSelect({
+            handles: true,
+            onSelectEnd: function (img, selection) {
+                document.getElementById("x1").value = selection.x1;
+                document.getElementById("y1").value = selection.y1;
+                document.getElementById("w").value = selection.width;
+                document.getElementById("h").value = selection.height;
+                //alert(`Размер выделенной области составляет ${(selection.width * selection.height) / 8} байт`);
+            }
+        });
+    });
+
+
+</script>
+{% endblock %}
