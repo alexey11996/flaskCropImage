@@ -14,33 +14,23 @@
 <div>
     <img class="img-responsive" id="photo" src="{{filename}}">
     <br>
+    <label class="radio-inline"><input type="radio" name="optradio" id="firstRadio" checked>Option 1</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="secondRadio">Option 2</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="thirdRadio">Option 3</label>
+    <br>
+    <br>
     <form method="POST" action="{{ url_for('crop') }}">
         <input type="hidden" value="{{ filename }}" name="filename" id="filename">
-        <input type="hidden" value="0" name="x1" id="x1">
+        <!-- <input type="hidden" value="0" name="x1" id="x1">
         <input type="hidden" value="0" name="y1" id="y1">
         <input type="hidden" value="0" name="w" id="w">
-        <input type="hidden" value="0" name="h" id="h">
-        <input type="submit" value="Обрезать" class="btn btn-primary">
+        <input type="hidden" value="0" name="h" id="h"> -->
+        <input type="hidden" value="" name="params" id="params">
+        <input type="submit" value="Применить фильтр" class="btn btn-primary">
     </form>
 
 </div>
 {% endif %}
-<!-- <script type="text/javascript">
-    $(document).ready(function () {
-        $('img#photo').imgAreaSelect({
-            handles: true,
-            onSelectEnd: function (img, selection) {
-                document.getElementById("x1").value = selection.x1;
-                document.getElementById("y1").value = selection.y1;
-                document.getElementById("w").value = selection.width;
-                document.getElementById("h").value = selection.height;
-                //alert(`Размер выделенной области составляет ${(selection.width * selection.height) / 8} байт`);
-            }
-        });
-    });
-
-
-</script> -->
 <script type="text/javascript">
     $(document).ready(function () {
         $('img#photo').selectAreas({
@@ -58,9 +48,10 @@
     function showAreas() {
         var areas = $('img#photo').selectAreas('areas');
         console.log(displayAreas(areas))
+        document.getElementById('params').value = displayAreas(areas);
     }
     function areaToString(area) {
-        return area.x + ':' + area.y + ' ' + area.width + 'x' + area.height + '---'
+        return area.x + ', ' + area.y + ', ' + sum(area.width, area.x) + ', ' + sum(area.height, area.y) + '&'
     }
 
     function displayAreas(areas) {
@@ -70,5 +61,15 @@
         });
         return text;
     };
+
+    function sum() {
+        var result = 0;
+
+        for (var i = 0; i < arguments.length; i++) {
+            result += arguments[i];
+        }
+
+        return result;
+    }
 </script>
 {% endblock %}
