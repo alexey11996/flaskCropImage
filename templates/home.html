@@ -14,9 +14,14 @@
 <div>
     <img class="img-responsive" id="photo" src="{{filename}}">
     <br>
-    <label class="radio-inline"><input type="radio" name="optradio" id="firstRadio" checked>Option 1</label>
-    <label class="radio-inline"><input type="radio" name="optradio" id="secondRadio">Option 2</label>
-    <label class="radio-inline"><input type="radio" name="optradio" id="thirdRadio">Option 3</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="bright" onclick="if(this.checked){bright()}">Осветление</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="dark" onclick="if(this.checked){dark()}">Затемнение</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="neg" onclick="if(this.checked){neg()}">Негатив</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="wb" onclick="if(this.checked){wb()}">Черно-Белое</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="gs" onclick="if(this.checked){gs()}">Оттенки
+        Серого</label>
+    <label class="radio-inline"><input type="radio" name="optradio" id="sp" onclick="if(this.checked){sp()}">Сепия</label>
+
     <br>
     <br>
     <form method="POST" action="{{ url_for('crop') }}">
@@ -26,6 +31,7 @@
         <input type="hidden" value="0" name="w" id="w">
         <input type="hidden" value="0" name="h" id="h"> -->
         <input type="hidden" value="" name="params" id="params">
+        <input type="hidden" value="" name="option" id="option">
         <input type="submit" value="Применить фильтр" class="btn btn-primary">
     </form>
 
@@ -44,6 +50,25 @@
             onChanged: showAreas
         })
     });
+
+    function bright() {
+        document.getElementById('option').value = 'bright'
+    }
+    function dark() {
+        document.getElementById('option').value = 'dark'
+    }
+    function neg() {
+        document.getElementById('option').value = 'neg'
+    }
+    function wb() {
+        document.getElementById('option').value = 'wb'
+    }
+    function gs() {
+        document.getElementById('option').value = 'gs'
+    }
+    function sp() {
+        document.getElementById('option').value = 'sp'
+    }
 
     function showAreas() {
         var areas = $('img#photo').selectAreas('areas');
