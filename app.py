@@ -6,22 +6,14 @@ import glob
 import shutil
 import scripts
 import time
+import cairosvg
 
 app = Flask(__name__)
-
-
-# @app.after_request
-# def after_request_callback(response):
-#     files = glob.glob('static/init/*')
-#     for f in files:
-#         os.remove(f)
-#     return response
-
 
 photos = UploadSet("photos", IMAGES)
 
 app.config["UPLOADED_PHOTOS_DEST"] = "static/init"
-app.config["UPLOADED_PHOTOS_ALLOW"] = set(["png", "jpg", "jpeg"])
+app.config["UPLOADED_PHOTOS_ALLOW"] = set(["png", "jpg", "jpeg", "svg"])
 configure_uploads(app, photos)
 
 
@@ -29,7 +21,19 @@ configure_uploads(app, photos)
 def index():
     if request.method == "POST" and "photo" in request.files:
         filename = photos.save(request.files["photo"])
-        return render_template("home.html", filename="/static/init/%s" % (filename))
+        print(filename)
+        if ".svg" in filename:
+            cairosvg.svg2png(
+                url="./static/init/" + filename,
+                write_to="./static/init/svg_" + filename.split(".svg")[0] + ".png",
+            )
+            os.remove("./static/init/" + filename)
+            return render_template(
+                "home.html",
+                filename="/static/init/svg_%s" % (filename.split(".svg")[0] + ".png"),
+            )
+        elif ".svg" not in filename:
+            return render_template("home.html", filename="/static/init/%s" % (filename))
     return render_template("home.html")
 
 
@@ -42,7 +46,10 @@ def crop():
     if option == "dark":
         for p in pr:
             if p != "":
-                scripts.colorChange("." + filename, p, 0.3)
+                if "svg_" in filename:
+                    scripts.colorChange_SVG("." + filename, p, 0.3)
+                else:
+                    scripts.colorChange("." + filename, p, 0.3)
         newName = (
             "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
         )
@@ -51,7 +58,10 @@ def crop():
     elif option == "bright":
         for p in pr:
             if p != "":
-                scripts.colorChange("." + filename, p, 1.8)
+                if "svg_" in filename:
+                    scripts.colorChange_SVG("." + filename, p, 1.8)
+                else:
+                    scripts.colorChange("." + filename, p, 1.8)
         newName = (
             "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
         )
@@ -60,16 +70,10 @@ def crop():
     elif option == "neg":
         for p in pr:
             if p != "":
-                scripts.negative("." + filename, p)
-        newName = (
-            "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
-        )
-        os.rename("." + filename, newName)
-        return render_template("croped.html", filename=newName)
-    elif option == "wb":
-        for p in pr:
-            if p != "":
-                scripts.white_black("." + filename, p, 0.8)
+                if "svg_" in filename:
+                    scripts.negative_SVG("." + filename, p)
+                else:
+                    scripts.negative("." + filename, p)
         newName = (
             "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
         )
@@ -78,7 +82,10 @@ def crop():
     elif option == "gs":
         for p in pr:
             if p != "":
-                scripts.gray_scale("." + filename, p)
+                if "svg_" in filename:
+                    scripts.gray_scale_SVG("." + filename, p)
+                else:
+                    scripts.gray_scale("." + filename, p)
         newName = (
             "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
         )
@@ -87,7 +94,10 @@ def crop():
     elif option == "sp":
         for p in pr:
             if p != "":
-                scripts.sepia("." + filename, p)
+                if "svg_" in filename:
+                    scripts.sepia_SVG("." + filename, p)
+                else:
+                    scripts.sepia("." + filename, p)
         newName = (
             "./static/init/" + str(time.time()) + filename.split("static/init/")[1]
         )
@@ -95,22 +105,6 @@ def crop():
         return render_template("croped.html", filename=newName)
     else:
         return render_template("croped.html", filename=filename)
-
-
-# @app.route("/croped")
-# def about():
-#     paths = glob.glob("static/cropped/*")
-#     n_paths = [w.replace('static/', '/static/') for w in paths]
-#     # print(n_paths)
-#     return render_template('croped.html', paths=paths)
-
-
-# @app.route("/delete")
-# def delete():
-#     files = glob.glob('static/cropped/*')
-#     for f in files:
-#         os.remove(f)
-#     return render_template('croped.html')
 
 
 if __name__ == "__main__":

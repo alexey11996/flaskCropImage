@@ -17,7 +17,6 @@
     <label class="radio-inline"><input type="radio" name="optradio" id="bright" onclick="if(this.checked){bright()}">Осветление</label>
     <label class="radio-inline"><input type="radio" name="optradio" id="dark" onclick="if(this.checked){dark()}">Затемнение</label>
     <label class="radio-inline"><input type="radio" name="optradio" id="neg" onclick="if(this.checked){neg()}">Негатив</label>
-    <label class="radio-inline"><input type="radio" name="optradio" id="wb" onclick="if(this.checked){wb()}">Черно-Белое</label>
     <label class="radio-inline"><input type="radio" name="optradio" id="gs" onclick="if(this.checked){gs()}">Оттенки
         Серого</label>
     <label class="radio-inline"><input type="radio" name="optradio" id="sp" onclick="if(this.checked){sp()}">Сепия</label>
@@ -26,10 +25,6 @@
     <br>
     <form method="POST" action="{{ url_for('crop') }}">
         <input type="hidden" value="{{ filename }}" name="filename" id="filename">
-        <!-- <input type="hidden" value="0" name="x1" id="x1">
-        <input type="hidden" value="0" name="y1" id="y1">
-        <input type="hidden" value="0" name="w" id="w">
-        <input type="hidden" value="0" name="h" id="h"> -->
         <input type="hidden" value="" name="params" id="params">
         <input type="hidden" value="" name="option" id="option">
         <input type="submit" value="Применить фильтр" class="btn btn-primary">
@@ -60,9 +55,6 @@
     function neg() {
         document.getElementById('option').value = 'neg'
     }
-    function wb() {
-        document.getElementById('option').value = 'wb'
-    }
     function gs() {
         document.getElementById('option').value = 'gs'
     }
@@ -76,7 +68,7 @@
         document.getElementById('params').value = displayAreas(areas);
     }
     function areaToString(area) {
-        return area.x + ', ' + area.y + ', ' + sum(area.width, area.x) + ', ' + sum(area.height, area.y) + '&'
+        return Math.floor(area.x) + ', ' + Math.floor(area.y) + ', ' + sum(Math.floor(area.width), Math.floor(area.x)) + ', ' + sum(Math.floor(area.height), Math.floor(area.y)) + '&'
     }
 
     function displayAreas(areas) {
